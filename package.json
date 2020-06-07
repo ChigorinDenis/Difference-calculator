@@ -19,12 +19,19 @@
   "bugs": {
     "url": "https://github.com/ChigorinDenis/frontend-project-lvl2/issues"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
   "homepage": "https://github.com/ChigorinDenis/frontend-project-lvl2#readme",
   "devDependencies": {
+    "debug": "^4.1.1",
     "eslint": "^7.1.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.13.2"
+    "eslint-plugin-jest": "^23.13.2",
+    "jest": "^26.0.1",
+    "jest-cli": "^26.0.1"
   },
   "dependencies": {
     "commander": "^5.1.0"

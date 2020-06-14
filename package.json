@@ -8,7 +8,7 @@
     "gendiff": "bin/gendiff.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx -n --experimental-vm-modules jest"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "jest-cli": "^26.0.1"
   },
   "dependencies": {
-    "commander": "^5.1.0"
+    "commander": "^5.1.0",
+    "lodash": "^4.17.15"
   }
 }

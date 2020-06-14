@@ -1,11 +1,10 @@
-import commander from 'commander';
+import fs from 'fs';
+import path from 'path';
 
-export default () => {
-  const program = new commander.Command();
-  program
-    .version('0.1.0')
-    .description('Compares two configuration files and shows a difference.')
-    .option('-f, --format [type]', 'output format')
-    .arguments('<filepath1> <filepath2>');
-  program.parse(process.argv);
+const readFile = (filepath) => {
+  const { dir, base } = path.parse(filepath);
+  const content = fs.readFileSync(path.resolve(dir, base), 'utf-8');
+  return JSON.parse(content);
 };
+
+export default readFile;

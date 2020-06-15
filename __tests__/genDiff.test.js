@@ -1,4 +1,8 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import genDiff from '../src/genDiff.js';
+
 
 test('check working genDiff', () => {
   const arr = [
@@ -9,5 +13,7 @@ test('check working genDiff', () => {
     '- follow: false',
     '+ verbose: true',
   ];
-  expect(genDiff('./public/before.json', './public/after.json')).toEqual(`{\n${arr.join('\n')}\n}`);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  expect(genDiff(path.join(__dirname, '__fixtures__/before.json'), path.join(__dirname,'__fixtures__/after.json'))).toEqual(`{\n${arr.join('\n')}\n}`);
 });

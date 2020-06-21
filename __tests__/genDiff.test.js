@@ -16,4 +16,5 @@ test('check working genDiff', () => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   expect(genDiff(path.join(__dirname, '__fixtures__/before.json'), path.join(__dirname,'__fixtures__/after.json'))).toEqual(`{\n${arr.join('\n')}\n}`);
+  // expect(genDiff(path.join(__dirname, '__fixtures__/before.yml'), path.join(__dirname,'__fixtures__/after.yml'))).toEqual(`{\n${arr.join('\n')}\n}`);
 });

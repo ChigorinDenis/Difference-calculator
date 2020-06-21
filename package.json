@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "commander": "^5.1.0",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "yaml": "^1.10.0"
   }
 }

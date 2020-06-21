@@ -15,4 +15,5 @@ test('check reading file', () => {
   const __dirname = dirname(__filename);
   expect(readFile(path.join(__dirname, '__fixtures__/before.json'))).toEqual(before);
   expect(readFile(path.join(__dirname, '__fixtures__/before.yml'))).toEqual(before);
+  // expect(readFile(path.join(__dirname, '__fixtures__/before.ini'))).toEqual(before);
 });

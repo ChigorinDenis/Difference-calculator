@@ -8,3 +8,6 @@
 
 #### Пример работы утилиты gendiff с плоскими файлами формат yaml
 [![asciicast](https://asciinema.org/a/ocEwEIXmfasxBjtlsK8xyxNR8.svg)](https://asciinema.org/a/ocEwEIXmfasxBjtlsK8xyxNR8)
+
+#### Пример работы утилиты gendiff с плоскими файлами формат ini
+[![asciicast](https://asciinema.org/a/g9aFpLRwEamHkvmmBOZyM5SbA.svg)](https://asciinema.org/a/g9aFpLRwEamHkvmmBOZyM5SbA)

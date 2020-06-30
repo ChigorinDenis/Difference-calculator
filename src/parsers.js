@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const parseJSON = (data) => JSON.parse(data);
 const parseYML = (data) => yaml.parse(data);
-const parseIni = (data) => ini.parse(data);
+const parseIni = (data) => ini.decode(data);
 
 const parse = (data, extname) => {
   const parseFunc = {

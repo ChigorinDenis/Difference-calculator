@@ -11,3 +11,6 @@
 
 #### Пример работы утилиты gendiff с плоскими файлами формат ini
 [![asciicast](https://asciinema.org/a/g9aFpLRwEamHkvmmBOZyM5SbA.svg)](https://asciinema.org/a/g9aFpLRwEamHkvmmBOZyM5SbA)
+
+#### Пример работы утилиты gendiff с рекурсивными файлами
+[![asciicast](https://asciinema.org/a/HBAIuIA5ymAYmSvGfDrxtVypn.svg)](https://asciinema.org/a/HBAIuIA5ymAYmSvGfDrxtVypn)

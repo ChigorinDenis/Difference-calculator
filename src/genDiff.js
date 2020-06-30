@@ -1,33 +1,62 @@
 import _ from 'lodash';
 import readFile from './utils.js';
 
-const combineFilesByKeys = (beforeFile, afterFile) => (
-  _.mergeWith({ ...beforeFile }, afterFile, (a, b) => [a, b])
-);
-
-const isDeletedKey = (value) => (!Array.isArray(value));
-const isNotEditValue = ([beforeValue, afterValue]) => (beforeValue === afterValue);
-const isAddedKey = ([beforeValue]) => (beforeValue === undefined);
+const buidTree = (before, after) => {
+  const keys = _.union(Object.keys(before), Object.keys(after)).sort();
+  const tree = keys.reduce((acc, key) => {
+    if (!_.has(before, key) && _.has(after, key)) {
+      const node = {
+        name: key,
+        value: after[key],
+        type: 'added',
+        children: [],
+      };
+      return [...acc, node];
+    }
+    if (_.has(before, key) && !_.has(after, key)) {
+      const node = {
+        name: key,
+        value: before[key],
+        type: 'deleted',
+        children: [],
+      };
+      return [...acc, node];
+    }
+    const beforeItem = before[key];
+    const afterItem = after[key];
+    if (beforeItem === afterItem) {
+      const node = {
+        name: key,
+        value: beforeItem,
+        type: 'unmodified',
+        children: [],
+      };
+      return [...acc, node];
+    }
+    if (typeof beforeItem === 'object' && typeof afterItem === 'object') {
+      const node = {
+        name: key,
+        value: null,
+        type: 'unmodified',
+        children: [...buidTree(beforeItem, afterItem)],
+      };
+      return [...acc, node];
+    }
+    const node = {
+      name: key,
+      value: [beforeItem, afterItem],
+      type: 'modified',
+      children: [],
+    };
+    return [...acc, node];
+  }, []);
+  return tree;
+};
 
 const genDiff = (filepath1, filepath2) => {
   const beforeFile = readFile(filepath1);
   const afterFile = readFile(filepath2);
-  const combinedFileContent = combineFilesByKeys(beforeFile, afterFile);
-  const str = Object.entries(combinedFileContent)
-    .reduce((acc, [key, value]) => {
-      if (isDeletedKey(value)) {
-        return `${acc}- ${key}: ${value}\n`;
-      }
-      const [beforeValue, afterValue] = value;
-      if (isAddedKey(value)) {
-        return `${acc}+ ${key}: ${afterValue}\n`;
-      }
-      if (isNotEditValue(value)) {
-        return `${acc}  ${key}: ${beforeValue}\n`;
-      }
-      return `${acc}+ ${key}: ${afterValue}\n- ${key}: ${beforeValue}\n`;
-    }, '');
-  return `{\n${str}}`;
+  return buidTree(beforeFile, afterFile);
 };
 
 export default genDiff;

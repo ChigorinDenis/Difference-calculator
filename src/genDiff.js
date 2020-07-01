@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import readFile from './utils.js';
+import formatters from './formatters/index.js';
 
 const buidTree = (before, after) => {
   const keys = _.union(Object.keys(before), Object.keys(after)).sort();
@@ -53,10 +54,12 @@ const buidTree = (before, after) => {
   return tree;
 };
 
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, formatName) => {
   const beforeFile = readFile(filepath1);
   const afterFile = readFile(filepath2);
-  return buidTree(beforeFile, afterFile);
+  const tree = buidTree(beforeFile, afterFile);
+  const toFormat = formatters(formatName);
+  return toFormat(tree);
 };
 
 export default genDiff;

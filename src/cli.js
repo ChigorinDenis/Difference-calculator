@@ -1,6 +1,5 @@
 import commander from 'commander';
 import genDiff from './genDiff.js';
-import stylish from './slylish.js';
 
 export default () => {
   const program = new commander.Command();
@@ -10,10 +9,8 @@ export default () => {
     .option('-f, --format [type]', 'output format', 'stylish')
     .arguments('<filepath1> <filepath2>')
     .action((filepath1, filepath2) => {
-      const diff = genDiff(filepath1, filepath2);
-      if (program.format === 'stylish') {
-        console.log(stylish(diff));
-      }
+      const diff = genDiff(filepath1, filepath2, program.format);
+      console.log(diff);
     });
   program.parse(process.argv);
 };

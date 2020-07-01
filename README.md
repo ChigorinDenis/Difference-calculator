@@ -17,3 +17,6 @@
 
 #### Пример работы утилиты gendiff с рекурсивными файлами форматер plаin
 [![asciicast](https://asciinema.org/a/aFRia53eshyENnml9XaVy42oK.svg)](https://asciinema.org/a/aFRia53eshyENnml9XaVy42oK)
+
+#### Пример работы утилиты gendiff с рекурсивными файлами форматер json
+[![asciicast](https://asciinema.org/a/5PkwEv47Lh9EYbJMMNAp9HHvs.svg)](https://asciinema.org/a/5PkwEv47Lh9EYbJMMNAp9HHvs)

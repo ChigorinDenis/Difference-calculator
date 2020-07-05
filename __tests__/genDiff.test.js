@@ -1,37 +1,43 @@
-import path from 'path';
+/* eslint-disable no-underscore-dangle */
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import genDiff from '../src/genDiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// test('check working genDiff with diffrence format', () => {
-//   const arr = [
-//      '  host: hexlet.io',
-//      '+ timeout: 20',
-//      '- timeout: 50',
-//      '- proxy: 123.234.53.22',
-//      '- follow: false',
-//      '+ verbose: true',
-//   ];
-//   const tree =  genDiff(path.join(__dirname, '__fixtures__', filepath1), path.join(__dirname,'__fixtures__', filepath2));
-//   test.each([
-//     ['before.yml', 'after.yml'],
-//     ['before.ini', 'after.ini'],
-//    ])('(%s, s%)', (filepath1, filepath2) => {  
-//     expect(displayFormat(tree)).toEqual(`${arr.join('\n')}`);
-//    });
-// });
 
-test('genDiff recursive file formatted by stylish', () => {
-  const diff =  genDiff(path.join(__dirname, '__fixtures__', 'before.json'), path.join(__dirname,'__fixtures__', 'after.json'), 'stylish');
-  const result = fs.readFileSync(path.join(__dirname, '__fixtures__', 'stylish.txt'), 'utf-8');
+const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
+
+test('genDiff flat file formatted by stylish', () => {
+  const diff = genDiff(getFixturePath('beforeFlat.yml'), getFixturePath('afterFlat.yml'), 'stylish');
+  const result = fs.readFileSync(getFixturePath('diffFlat.txt'), 'utf-8');
   expect(diff).toBe(result);
 });
 
-test('genDiff recursive file formatted by plain', () => {
-  const diff =  genDiff(path.join(__dirname, '__fixtures__', 'before.json'), path.join(__dirname,'__fixtures__', 'after.json'), 'plain');
-  const result = fs.readFileSync(path.join(__dirname, '__fixtures__', 'plain.txt'), 'utf-8');
-  expect(diff).toBe(result);
+test.each([
+  ['beforeRecursive.json', 'afterRecursive.json'],
+  ['beforeRecursive.ini', 'afterRecursive.ini'],
+  ['beforeRecursive.yml', 'afterRecursive.yml'],
+])('genDiff recursive file formatted by stylish(%s, %s)', (filename1, filename2) => {
+  const expected = fs.readFileSync(getFixturePath('stylish.txt'), 'utf-8');
+  expect(genDiff(getFixturePath(filename1), getFixturePath(filename2), 'stylish')).toBe(expected);
+});
+
+test.each([
+  ['beforeRecursive.json', 'afterRecursive.json'],
+  ['beforeRecursive.ini', 'afterRecursive.ini'],
+  ['beforeRecursive.yml', 'afterRecursive.yml'],
+])('genDiff recursive file formatted by plain(%s, %s)', (filename1, filename2) => {
+  const expected = fs.readFileSync(getFixturePath('plain.txt'), 'utf-8');
+  expect(genDiff(getFixturePath(filename1), getFixturePath(filename2), 'plain')).toBe(expected);
+});
+
+test.each([
+  ['beforeRecursive.json', 'afterRecursive.json'],
+  ['beforeRecursive.ini', 'afterRecursive.ini'],
+  ['beforeRecursive.yml', 'afterRecursive.yml'],
+])('genDiff recursive file formatted by json(%s, %s)', (filename1, filename2) => {
+  const expected = fs.readFileSync(getFixturePath('json.txt'), 'utf-8');
+  expect(genDiff(getFixturePath(filename1), getFixturePath(filename2), 'json')).toBe(expected);
 });

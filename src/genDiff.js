@@ -2,54 +2,32 @@ import _ from 'lodash';
 import readFile from './utils.js';
 import formatters from './formatters/index.js';
 
+const buildNode = (name, value, type, children = []) => ({
+  name,
+  value,
+  type,
+  children,
+});
+
 const buidTree = (before, after) => {
   const keys = _.union(Object.keys(before), Object.keys(after)).sort();
   const tree = keys.reduce((acc, key) => {
     if (!_.has(before, key) && _.has(after, key)) {
-      const node = {
-        name: key,
-        value: after[key],
-        type: 'added',
-        children: [],
-      };
-      return [...acc, node];
+      return [...acc, buildNode(key, after[key], 'added')];
     }
     if (_.has(before, key) && !_.has(after, key)) {
-      const node = {
-        name: key,
-        value: before[key],
-        type: 'deleted',
-        children: [],
-      };
-      return [...acc, node];
+      return [...acc, buildNode(key, before[key], 'deleted')];
     }
     const beforeItem = before[key];
     const afterItem = after[key];
     if (beforeItem === afterItem) {
-      const node = {
-        name: key,
-        value: beforeItem,
-        type: 'unmodified',
-        children: [],
-      };
-      return [...acc, node];
+      return [...acc, buildNode(key, beforeItem, 'unmodified')];
     }
     if (typeof beforeItem === 'object' && typeof afterItem === 'object') {
-      const node = {
-        name: key,
-        value: null,
-        type: 'unmodified',
-        children: [...buidTree(beforeItem, afterItem)],
-      };
-      return [...acc, node];
+      const children = [...buidTree(beforeItem, afterItem)];
+      return [...acc, buildNode(key, null, 'unmodified', children)];
     }
-    const node = {
-      name: key,
-      value: [beforeItem, afterItem],
-      type: 'modified',
-      children: [],
-    };
-    return [...acc, node];
+    return [...acc, buildNode(key, [beforeItem, afterItem], 'modified')];
   }, []);
   return tree;
 };

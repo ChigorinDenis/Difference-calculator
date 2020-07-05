@@ -1,2 +1,6 @@
 /node_modules/
 package.json~
+after.ini
+before.ini
+after.json
+before.json

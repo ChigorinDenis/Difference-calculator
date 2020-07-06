@@ -7,37 +7,47 @@ const formatObj = (obj, space) => {
   return `{\n${str}${' '.repeat(space)}}`;
 };
 
-const formatStylish = (tree, space = 2) => {
+const makeContent = (value, space) => {
   const increaseSpace = 2;
-  const str = tree
-    .reduce((acc, node) => {
-      const {
-        name,
-        type,
-        value,
-        children,
-      } = node;
-      if (type === 'added') {
-        const content = typeof value === 'object' ? formatObj(value, space + increaseSpace) : value;
-        return `${acc}${' '.repeat(space)}+ ${name}: ${content}\n`;
-      }
-      if (type === 'deleted') {
-        const content = typeof value === 'object' ? formatObj(value, space + increaseSpace) : value;
-        return `${acc}${' '.repeat(space)}- ${name}: ${content}\n`;
-      }
-      if (type === 'modified') {
-        const [before, after] = value;
-        const contentBefore = typeof before === 'object' ? formatObj(before, space + increaseSpace) : before;
-        const contentAfter = typeof after === 'object' ? formatObj(after, space + increaseSpace) : after;
-        return `${acc}${' '.repeat(space)}- ${name}: ${contentBefore}\n${' '.repeat(space)}+ ${name}: ${contentAfter}\n`;
-      }
-      if (type === 'unmodified') {
-        const content = children.length !== 0 ? `{\n${formatStylish(children, space + 4)}${' '.repeat(space + increaseSpace)}}` : value;
-        return `${acc}${' '.repeat(space)}  ${name}: ${content}\n`;
-      }
-      return acc;
-    }, '');
-  return str;
+  return typeof value === 'object' ? formatObj(value, space + increaseSpace) : value;
+};
+const makeAddedString = (node, space) => {
+  const { value, name } = node;
+  return `${' '.repeat(space)}+ ${name}: ${makeContent(value, space)}\n`;
+};
+const makeDeletedString = (node, space) => {
+  const { value, name } = node;
+  return `${' '.repeat(space)}- ${name}: ${makeContent(value, space)}\n`;
+};
+const makeModifiedString = (node, space) => {
+  const { value, name } = node;
+  const [before, after] = value;
+  const contentBefore = makeContent(before, space);
+  const contentAfter = makeContent(after, space);
+  return `${' '.repeat(space)}- ${name}: ${contentBefore}\n${' '.repeat(space)}+ ${name}: ${contentAfter}\n`;
+};
+const makeUnmodifiedString = (node, space, fn) => {
+  const increaseSpace = 2;
+  const { value, name, children } = node;
+  const content = children.length !== 0 ? `{\n${fn(children, space + 4)}${' '.repeat(space + increaseSpace)}}` : value;
+  return `${' '.repeat(space)}  ${name}: ${content}\n`;
+};
+
+const createStylishString = (node, space, fn) => {
+  const { type } = node;
+  const createFunc = {
+    deleted: makeDeletedString,
+    added: makeAddedString,
+    modified: makeModifiedString,
+    unmodified: makeUnmodifiedString,
+  };
+  return createFunc[type](node, space, fn);
+};
+
+const formatStylish = (tree, space = 2) => {
+  const formattedTree = tree
+    .reduce((acc, node) => (`${acc}${createStylishString(node, space, formatStylish)}`), '');
+  return formattedTree;
 };
 
 export default (tree) => (`{\n${formatStylish(tree)}}`);

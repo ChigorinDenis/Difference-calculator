@@ -36,8 +36,8 @@ const genDiff = (filepath1, filepath2, formatName) => {
   const beforeFile = readFile(filepath1);
   const afterFile = readFile(filepath2);
   const tree = buidTree(beforeFile, afterFile);
-  const toFormat = formatters(formatName);
-  return toFormat(tree);
+  const formatTree = formatters(formatName);
+  return formatTree(tree);
 };
 
 export default genDiff;

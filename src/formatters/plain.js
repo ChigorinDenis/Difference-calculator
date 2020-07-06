@@ -19,7 +19,7 @@ const createPlainString = (node, path) => {
 };
 
 const formatPlain = (tree, path = []) => {
-  const plain = tree.reduce((acc, node) => {
+  const formattedTree = tree.reduce((acc, node) => {
     const { children, name } = node;
     if (children.length !== 0) {
       return [...acc, ...formatPlain(children, [...path, name])];
@@ -27,7 +27,7 @@ const formatPlain = (tree, path = []) => {
     const plainString = createPlainString(node, [...path, name]);
     return plainString === '' ? acc : [...acc, plainString];
   }, []);
-  return plain;
+  return formattedTree;
 };
 
 export default (tree) => (formatPlain(tree).join('\n'));

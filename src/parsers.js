@@ -1,6 +1,5 @@
 import yaml from 'yaml';
 import ini from 'ini';
-import _ from 'lodash';
 
 const replaceString = (obj) => {
   const newObj = Object.entries(obj)
@@ -23,14 +22,13 @@ const parseIni = (data) => {
 };
 
 const parse = (data, extname) => {
-  const parseFunc = {
+  const parsers = {
     json: parseJSON,
     yml: parseYML,
     yaml: parseYML,
     ini: parseIni,
   };
-  const key = _.trim(extname, '.');
-  return parseFunc[key](data);
+  return parsers[extname](data);
 };
 
 export default parse;

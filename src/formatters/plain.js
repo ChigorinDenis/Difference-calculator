@@ -1,33 +1,30 @@
-const makeContent = (value) => (typeof value === 'object' ? '[ complex value ]' : value);
-const makeDeletedString = (path) => (`Property '${path}' was deleted`);
-const makeAddedString = (path, { value }) => (`Property '${path}' was added with value: ${makeContent(value)}`);
-const makeModifiedString = (path, { value }) => {
-  const [beforeValue, afterValue] = value;
-  return `Property '${path}' was changed from ${makeContent(beforeValue)} to ${makeContent(afterValue)}`;
-};
-const makeUnmodifiedString = () => ('');
+const formatValue = (value) => (typeof value === 'object' ? '[ complex value ]' : value);
 
-const createPlainString = (node, path) => {
-  const { type } = node;
-  const createFunc = {
-    deleted: makeDeletedString,
-    added: makeAddedString,
-    modified: makeModifiedString,
-    unmodified: makeUnmodifiedString,
-  };
-  return createFunc[type](path.join('.'), node);
-};
-
-const formatPlain = (tree, path = []) => {
-  const formattedTree = tree.reduce((acc, node) => {
-    const { children, name } = node;
-    if (children.length !== 0) {
-      return [...acc, ...formatPlain(children, [...path, name])];
+const formatPlainDiff = (tree, path = []) => {
+  const formattedDiff = tree.flatMap((node) => {
+    const {
+      children,
+      name,
+      type,
+      value,
+    } = node;
+    const nestedPath = [...path, name];
+    switch (type) {
+      case 'deleted':
+        return `Property '${nestedPath.join('.')}' was deleted`;
+      case 'added':
+        return `Property '${nestedPath.join('.')}' was added with value: ${formatValue(value)}`;
+      case 'modified': {
+        const [beforeValue, afterValue] = value;
+        return `Property '${nestedPath.join('.')}' was changed from ${formatValue(beforeValue)} to ${formatValue(afterValue)}`;
+      }
+      case 'unmodified':
+        return formatPlainDiff(children, nestedPath);
+      default:
+        throw new Error(`Error! type : ${type} invalid`);
     }
-    const plainString = createPlainString(node, [...path, name]);
-    return plainString === '' ? acc : [...acc, plainString];
-  }, []);
-  return formattedTree;
+  });
+  return formattedDiff.filter((item) => item !== '').join('\n');
 };
 
-export default (tree) => (formatPlain(tree).join('\n'));
+export default formatPlainDiff;

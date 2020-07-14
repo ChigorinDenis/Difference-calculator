@@ -7,35 +7,41 @@ const formatObj = (obj, space) => {
 
 const formatValue = (value, space) => (typeof value === 'object' ? formatObj(value, space) : value);
 
-const formatStylishDiff = (tree, space = 2) => {
-  const increaseSpace = 2;
-  const objectSpace = space + increaseSpace;
-  const formattedTree = tree
-    .map((node) => {
-      const {
-        name,
-        type,
-        value,
-        children,
-      } = node;
-      switch (type) {
-        case 'deleted':
-          return `${' '.repeat(space)}- ${name}: ${formatValue(value, objectSpace)}`;
-        case 'added':
-          return `${' '.repeat(space)}+ ${name}: ${formatValue(value, objectSpace)}`;
-        case 'modified': {
-          const [before, after] = value;
-          return `${' '.repeat(space)}- ${name}: ${formatValue(before, objectSpace)}\n${' '.repeat(space)}+ ${name}: ${formatValue(after, objectSpace)}`;
+const formatStylishDiff = (tree) => {
+  const iter = (data, depth) => {
+    const indent = 2;
+    const space = depth * indent;
+    const formattedTree = data
+      .map((node) => {
+        const {
+          name,
+          type,
+          value,
+          beforeValue,
+          afterValue,
+          children,
+        } = node;
+        switch (type) {
+          case 'deleted':
+            return `${' '.repeat(space)}- ${name}: ${formatValue(value, space + indent)}`;
+          case 'added':
+            return `${' '.repeat(space)}+ ${name}: ${formatValue(value, space + indent)}`;
+          case 'modified': {
+            return `${' '.repeat(space)}- ${name}: ${formatValue(beforeValue, space + indent)}\n${' '.repeat(space)}+ ${name}: ${formatValue(afterValue, space + indent)}`;
+          }
+          case 'unmodified': {
+            return `${' '.repeat(space)}  ${name}: ${value}`;
+          }
+          case 'nested': {
+            return `${' '.repeat(space)}  ${name}: ${iter(children, depth + 2)}`;
+          }
+          default:
+            throw new Error(`Error! type : ${type} invalid`);
         }
-        case 'unmodified': {
-          const content = value === null ? `${formatStylishDiff(children, space + 4)}` : value;
-          return `${' '.repeat(space)}  ${name}: ${content}`;
-        }
-        default:
-          throw new Error(`Error! type : ${type} invalid`);
-      }
-    });
-  return `{\n${formattedTree.join('\n')}\n${' '.repeat(space - increaseSpace)}}`;
+      });
+    return `{\n${formattedTree.join('\n')}\n${' '.repeat(space - 2)}}`;
+  };
+  return iter(tree, 1);
 };
 
 export default formatStylishDiff;

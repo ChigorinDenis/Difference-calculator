@@ -14,8 +14,7 @@ const replaceString = (obj) => {
     }, {});
   return newObj;
 };
-const parseJSON = (data) => JSON.parse(data);
-const parseYML = (data) => yaml.parse(data);
+
 const parseIni = (data) => {
   const obj = ini.parse(data);
   return replaceString(obj);
@@ -23,9 +22,9 @@ const parseIni = (data) => {
 
 const parse = (data, extname) => {
   const parsers = {
-    json: parseJSON,
-    yml: parseYML,
-    yaml: parseYML,
+    json: JSON.parse,
+    yml: yaml.parse,
+    yaml: yaml.parse,
     ini: parseIni,
   };
   return parsers[extname](data);
